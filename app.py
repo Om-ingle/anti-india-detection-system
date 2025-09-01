@@ -1295,7 +1295,7 @@ def generate_enhanced_demo_data(size=1000):
     return data
 
 def main():
-    st.title("🛡️ Anti-India Campaign Detection System - FIXED")
+    st.title("🛡️ Anti-India Campaign Detection System")
     st.markdown("**Enhanced analysis with fixed coordination networks, timeline visualization, and report generation**")
     st.markdown("---")
     
