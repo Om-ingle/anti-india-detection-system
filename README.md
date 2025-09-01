@@ -41,7 +41,7 @@ The prototype allows users to input textual data and visualize detection outputs
 
 1. **Run the detection system:**
    ```bash
-   python main.py
+   streamlit run app.py
    ```
 
 2. **Interact with the prototype:**
