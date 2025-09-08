@@ -1388,119 +1388,185 @@ def generate_comprehensive_report(df, analysis_results, coordination_results):
 
 @st.cache_data
 @st.cache_data
+@st.cache_data
 def generate_enhanced_demo_data(size=1000):
-    """Generate enhanced demo dataset with more realistic and diverse patterns"""
+    """Generate enhanced demo dataset with realistic threat level distribution"""
     import random
     
-    # More diverse anti-India templates
-    anti_india_templates = [
-        "India becoming authoritarian under current leadership #democracy #concerns",
-        "Minority rights issues in various Indian states need attention",
-        "Kashmir situation requires peaceful resolution and dialogue",
-        "Press freedom declining according to international reports",
-        "Economic inequality rising across different regions of India",
-        "Environmental policies need stronger implementation nationwide",
-        "Judicial independence concerns raised by legal experts",
-        "Social media regulations affecting free speech debates",
-        "Border disputes require diplomatic solutions with neighbors",
-        "Religious tensions in some areas need community healing"
+    # Critical threat templates (10% of data)
+    critical_templates = [
+        "Break India movement gaining momentum, time to act #breakindia #separatist",
+        "Destroy Indian unity, create divisions among communities #antiindia #chaos",
+        "India is fascist state, needs international intervention immediately #genocide #fascist", 
+        "Kashmir freedom fighters deserve our support against oppression #kashmir #terrorism",
+        "Khalistan movement will succeed, Punjab independence soon #khalistan #separatist",
+        "Indian army commits war crimes, world must stop them #warcrime #terrorist",
+        "Hindu extremists controlling government, minorities under threat #hindu #extremist",
+        "Economic boycott India until they stop human rights violations #boycott #violation",
+        "CIA should destabilize Indian government for world peace #cia #destabilize",
+        "India biggest threat to world peace, needs regime change #regime #threat"
     ]
     
-    # More varied neutral content
-    neutral_templates = [
-        "India's space program achievements are inspiring the world",
-        "Celebrating diverse festivals brings communities together beautifully",
-        "Digital transformation helping rural areas access better services",
-        "Young entrepreneurs creating innovative solutions for local problems",
-        "Traditional arts and crafts getting global recognition recently",
-        "Educational initiatives improving literacy rates across states",
-        "Healthcare improvements reaching remote areas through technology",
-        "Cultural exchange programs strengthening international relationships",
-        "Sports achievements making the nation proud internationally",
-        "Scientific research contributions gaining worldwide acknowledgment",
-        "Agricultural innovations helping farmers increase productivity sustainably",
-        "Tourism industry showcasing incredible natural beauty and heritage",
-        "Technology sector creating employment opportunities for youth",
-        "Renewable energy projects contributing to climate goals",
-        "Infrastructure development connecting rural and urban areas"
+    # High threat templates (15% of data)
+    high_templates = [
+        "Indian democracy is failing, authoritarian regime emerging #democracy #authoritarian",
+        "Press freedom declining rapidly in India, journalists attacked #press #freedom",
+        "Minority rights severely violated across Indian states #minority #rights", 
+        "Kashmir situation getting worse, international attention needed #kashmir #attention",
+        "Religious extremism rising under current leadership #religious #extremism",
+        "Economic policies destroying poor communities nationwide #economic #destruction",
+        "Environmental destruction continues unchecked in India #environment #destruction",
+        "Judicial system compromised by political interference #judicial #compromise",
+        "Student protests brutally suppressed by authorities #student #suppression",
+        "Farmers rights ignored by corporate-friendly government #farmers #ignored"
     ]
     
-    # More realistic user categories
-    categories = {
-        'activists': [f'activist_user_{i}' for i in range(1, 21)],
-        'critics': [f'policy_critic_{i}' for i in range(1, 31)], 
-        'regular': [f'citizen_{i}' for i in range(1, 151)],
-        'bots': [f'automated_{i}' for i in range(1, 26)],
-        'journalists': [f'reporter_{i}' for i in range(1, 16)]
+    # Medium threat templates (20% of data)
+    medium_templates = [
+        "India's foreign policy becoming increasingly aggressive #foreign #aggressive",
+        "Social media regulations limiting free speech concerns #social #speech",
+        "Border disputes escalating with neighboring countries #border #disputes",
+        "Educational system needs major reforms urgently #education #reforms",
+        "Healthcare infrastructure struggling with population demands #healthcare #struggling",
+        "Urban planning failures creating massive problems #urban #planning",
+        "Transportation systems inadequate for growing cities #transport #inadequate",
+        "Energy policies favor certain industries unfairly #energy #unfair",
+        "Tax policies burdening middle class families #tax #burden",
+        "Employment generation not keeping pace with demand #employment #pace"
+    ]
+    
+    # Low threat templates (25% of data)
+    low_templates = [
+        "India facing challenges but making progress in many areas #challenges #progress",
+        "Political debates healthy for democracy, different views important #political #democracy",
+        "Regional variations in policies create interesting discussions #regional #policies",
+        "Economic growth has both positive and negative impacts #economic #impacts",
+        "Social changes happening gradually across the country #social #changes",
+        "Cultural diversity sometimes creates minor tensions #cultural #diversity",
+        "Infrastructure development progressing at moderate pace #infrastructure #development",
+        "International relations require constant diplomatic efforts #international #diplomacy",
+        "Climate change affects agriculture and farmer incomes #climate #agriculture",
+        "Technology adoption varies across different regions #technology #adoption"
+    ]
+    
+    # Minimal threat templates (30% of data)
+    minimal_templates = [
+        "India's space program achievements inspiring global community #space #achievements",
+        "Celebrating diverse festivals brings people together beautifully #festivals #unity",
+        "Traditional arts gaining international recognition and appreciation #arts #recognition",
+        "Young entrepreneurs creating innovative solutions nationwide #entrepreneurs #innovation",
+        "Educational initiatives improving literacy in rural areas #education #literacy",
+        "Healthcare technology reaching remote villages effectively #healthcare #technology",
+        "Cultural exchange programs strengthening international bonds #cultural #exchange",
+        "Sports achievements making the nation proud globally #sports #achievements",
+        "Scientific research contributing to global knowledge base #research #knowledge",
+        "Tourism showcasing natural beauty and heritage sites #tourism #heritage",
+        "Agricultural innovations helping farmers increase productivity #agriculture #innovation",
+        "Renewable energy projects contributing to climate goals #renewable #energy",
+        "Digital transformation connecting rural and urban areas #digital #transformation",
+        "Community development projects improving local conditions #community #development",
+        "International cooperation in various fields expanding #cooperation #expanding"
+    ]
+    
+    # Realistic user categories with engagement patterns
+    user_categories = {
+        'extremist_bots': {'users': [f'extremist_bot_{i}' for i in range(1, 16)], 'engagement': (0, 5)},
+        'activist_critics': {'users': [f'activist_{i}' for i in range(1, 26)], 'engagement': (10, 100)},
+        'concerned_citizens': {'users': [f'citizen_{i}' for i in range(1, 51)], 'engagement': (20, 200)},
+        'regular_users': {'users': [f'user_{i}' for i in range(1, 101)], 'engagement': (5, 150)},
+        'positive_influencers': {'users': [f'influencer_{i}' for i in range(1, 21)], 'engagement': (100, 1000)},
+        'journalists': {'users': [f'reporter_{i}' for i in range(1, 16)], 'engagement': (50, 500)},
+        'verified_accounts': {'users': [f'verified_{i}' for i in range(1, 11)], 'engagement': (200, 2000)}
     }
     
-    all_users = []
-    for category_users in categories.values():
-        all_users.extend(category_users)
-    
-    # Generate more realistic timestamps
+    # Generate data with proper distribution
     base_time = datetime(2024, 8, 1)
     data = {
-        'tweet_id': [f'post_{i}' for i in range(size)],
+        'tweet_id': [f'post_{i:06d}' for i in range(1, size + 1)],
         'text': [],
         'username': [],
         'created_at': [],
         'like_count': [],
         'retweet_count': [],
-        'reply_count': [], 
+        'reply_count': [],
         'quote_count': []
     }
     
-    for i in range(size):
-        # 25% critical content, 75% neutral (more realistic distribution)
-        if i % 4 == 0:  # 25% anti-India content
-            template = random.choice(anti_india_templates)
-            # Add some variation to templates
-            if random.random() < 0.3:
-                template += f" #{random.choice(['urgent', 'attention', 'awareness', 'discussion'])}"
+    # Define distribution (percentages)
+    distributions = [
+        (0.10, critical_templates, ['extremist_bots', 'activist_critics']),  # 10%
+        (0.15, high_templates, ['activist_critics', 'concerned_citizens']),  # 15%
+        (0.20, medium_templates, ['concerned_citizens', 'regular_users']),   # 20%
+        (0.25, low_templates, ['regular_users', 'journalists']),             # 25%
+        (0.30, minimal_templates, ['positive_influencers', 'verified_accounts', 'regular_users'])  # 30%
+    ]
+    
+    post_index = 0
+    
+    for percentage, templates, allowed_categories in distributions:
+        posts_to_generate = int(size * percentage)
+        
+        for _ in range(posts_to_generate):
+            if post_index >= size:
+                break
+                
+            # Select template and add variation
+            template = random.choice(templates)
+            if random.random() < 0.3:  # 30% chance to add hashtag
+                additional_tags = ['#trending', '#viral', '#important', '#awareness', '#discussion']
+                template += f" {random.choice(additional_tags)}"
             
             data['text'].append(template)
             
-            # Mix of user types for critical content
-            if random.random() < 0.4:
-                user = random.choice(categories['activists'] + categories['critics'])
-            elif random.random() < 0.3:
-                user = random.choice(categories['bots'])
-            else:
-                user = random.choice(categories['regular'])
-            
+            # Select user category and specific user
+            category = random.choice(allowed_categories)
+            user = random.choice(user_categories[category]['users'])
             data['username'].append(user)
             
-            # Varied engagement for critical content
-            data['like_count'].append(random.randint(0, 50))
-            data['retweet_count'].append(random.randint(0, 15))
-            data['reply_count'].append(random.randint(0, 25))
-            data['quote_count'].append(random.randint(0, 5))
+            # Generate engagement based on user category
+            min_eng, max_eng = user_categories[category]['engagement']
+            data['like_count'].append(random.randint(min_eng, max_eng))
+            data['retweet_count'].append(random.randint(min_eng//4, max_eng//4))
+            data['reply_count'].append(random.randint(min_eng//3, max_eng//3))
+            data['quote_count'].append(random.randint(0, max_eng//10))
             
-        else:  # 75% neutral content
-            data['text'].append(random.choice(neutral_templates))
-            data['username'].append(random.choice(categories['regular'] + categories['journalists']))
+            # Generate realistic timestamps with clustering
+            days_offset = random.randint(0, 30)
             
-            # Higher engagement for positive content
-            data['like_count'].append(random.randint(5, 200))
-            data['retweet_count'].append(random.randint(1, 50))
-            data['reply_count'].append(random.randint(2, 30))
-            data['quote_count'].append(random.randint(0, 12))
+            # Create posting pattern based on threat level
+            if percentage <= 0.15:  # Critical/High threat - more coordinated timing
+                hour = random.choices(range(24), weights=[1,1,1,1,1,2,3,5,8,10,12,8,6,5,4,3,2,2,1,1,1,1,1,1])[0]
+            else:  # Normal distribution
+                hour = random.choices(range(24), weights=[2,1,1,1,2,3,4,6,8,10,12,14,15,14,12,10,8,7,6,5,4,3,2,2])[0]
+            
+            timestamp = base_time + timedelta(
+                days=days_offset,
+                hours=hour,
+                minutes=random.randint(0, 59),
+                seconds=random.randint(0, 59)
+            )
+            data['created_at'].append(timestamp)
+            
+            post_index += 1
+    
+    # Fill remaining slots with minimal threat content
+    while post_index < size:
+        template = random.choice(minimal_templates)
+        data['text'].append(template)
+        data['username'].append(random.choice(user_categories['regular_users']['users']))
         
-        # More realistic timestamp distribution
+        min_eng, max_eng = user_categories['regular_users']['engagement']
+        data['like_count'].append(random.randint(min_eng, max_eng))
+        data['retweet_count'].append(random.randint(min_eng//4, max_eng//4))
+        data['reply_count'].append(random.randint(min_eng//3, max_eng//3))
+        data['quote_count'].append(random.randint(0, max_eng//10))
+        
         days_offset = random.randint(0, 30)
-        hour = random.choices(
-            range(24), 
-            weights=[2,1,1,1,2,3,4,6,8,10,12,14,15,14,12,10,8,7,6,5,4,3,2,2]  # Realistic posting hours
-        )[0]
-        
-        timestamp = base_time + timedelta(
-            days=days_offset,
-            hours=hour,
-            minutes=random.randint(0, 59),
-            seconds=random.randint(0, 59)
-        )
+        hour = random.randint(0, 23)
+        timestamp = base_time + timedelta(days=days_offset, hours=hour, minutes=random.randint(0, 59))
         data['created_at'].append(timestamp)
+        
+        post_index += 1
     
     return data
 def show_collection_status(data_source, df):
@@ -1941,118 +2007,336 @@ def main():
                         st.info("Network visualization requires more coordination data")
         
         with tab4:
-            # FIXED: Advanced analytics with working bot detection
-            st.subheader("🤖 Enhanced Bot Detection Results")
+            st.subheader("📊 Engagement Analysis")
             
-            if 'coordination_results' in st.session_state:
-                bots = st.session_state.coordination_results.get('bots', [])
+            # Engagement metrics analysis
+            engagement_cols = ['like_count', 'retweet_count', 'reply_count', 'quote_count']
+            available_engagement_cols = [col for col in engagement_cols if col in analysis_df.columns]
+            
+            if available_engagement_cols:
+                # Calculate total engagement
+                analysis_df['total_engagement'] = analysis_df[available_engagement_cols].sum(axis=1)
                 
-                if bots:
-                    likely_bots = [bot for bot in bots if bot.get('is_likely_bot', False)]
+                col1, col2 = st.columns(2)
+                
+                with col1:
+                    st.write("**High Engagement Posts Analysis**")
                     
-                    col1, col2 = st.columns(2)
+                    # Find posts with unusually high engagement
+                    engagement_threshold = analysis_df['total_engagement'].quantile(0.9)
+                    high_engagement_posts = analysis_df[analysis_df['total_engagement'] > engagement_threshold].copy()
                     
-                    with col1:
-                        if likely_bots:
-                            st.metric("Suspected Bot Accounts", len(likely_bots))
+                    if not high_engagement_posts.empty:
+                        # Analyze high engagement by threat level
+                        if 'threat_category' in high_engagement_posts.columns:
+                            threat_engagement = high_engagement_posts.groupby('threat_category').agg({
+                                'total_engagement': ['count', 'mean', 'sum'],
+                                'risk_score': 'mean'
+                            }).round(2)
                             
-                            # Create DataFrame for better display
-                            bot_display_data = []
-                            for bot in likely_bots[:20]:
-                                bot_display_data.append({
-                                    'Username': bot['username'],
-                                    'Bot Probability': f"{bot['bot_probability']:.2%}",
-                                    'Posts': bot['post_count'],
-                                    'Avg Engagement': f"{bot['avg_engagement']:.1f}",
-                                    'Regularity': f"{bot['posting_regularity']:.2f}"
-                                })
-                            
-                            if bot_display_data:
-                                st.dataframe(pd.DataFrame(bot_display_data), use_container_width=True)
-                        else:
-                            st.info("No suspicious bot accounts detected")
+                            threat_engagement.columns = ['Post Count', 'Avg Engagement', 'Total Engagement', 'Avg Risk Score']
+                            st.dataframe(threat_engagement, use_container_width=True)
+                        
+                        # Show top engaging posts by risk level
+                        st.write("**Top Engaging High-Risk Posts:**")
+                        high_risk_engaging = high_engagement_posts[
+                            high_engagement_posts['risk_score'] > 6
+                        ].sort_values('total_engagement', ascending=False).head(5)
+                        
+                        for idx, post in high_risk_engaging.iterrows():
+                            with st.expander(f"Risk: {post['risk_score']:.1f} | Engagement: {post['total_engagement']:,} - @{post['username']}"):
+                                st.write(f"**Content:** {post['text'][:200]}...")
+                                
+                                col_a, col_b, col_c, col_d = st.columns(4)
+                                with col_a:
+                                    st.metric("Likes", f"{post['like_count']:,}")
+                                with col_b:
+                                    st.metric("Retweets", f"{post['retweet_count']:,}")  
+                                with col_c:
+                                    st.metric("Replies", f"{post['reply_count']:,}")
+                                with col_d:
+                                    st.metric("Quotes", f"{post['quote_count']:,}")
+                    else:
+                        st.info("No high engagement posts detected")
+                
+                with col2:
+                    # Engagement vs Risk Score correlation
+                    fig = px.scatter(
+                        analysis_df.sample(min(1000, len(analysis_df))),
+                        x='risk_score',
+                        y='total_engagement',
+                        color='threat_category' if 'threat_category' in analysis_df.columns else None,
+                        title='Risk Score vs Total Engagement',
+                        labels={'risk_score': 'Risk Score', 'total_engagement': 'Total Engagement'},
+                        hover_data=['username']
+                    )
+                    st.plotly_chart(fig, use_container_width=True)
+                
+                # Engagement anomaly detection
+                st.write("**Engagement Anomaly Analysis**")
+                
+                # Calculate engagement ratio (engagement per follower equivalent)
+                analysis_df['engagement_efficiency'] = analysis_df['total_engagement'] / (analysis_df['like_count'] + 1)
+                
+                # Identify suspicious engagement patterns
+                suspicious_patterns = []
+                
+                # Pattern 1: High engagement with low quality content (short, repetitive)
+                analysis_df['text_length'] = analysis_df['text'].str.len()
+                short_high_engagement = analysis_df[
+                    (analysis_df['text_length'] < 50) & 
+                    (analysis_df['total_engagement'] > analysis_df['total_engagement'].quantile(0.8))
+                ]
+                
+                if len(short_high_engagement) > 0:
+                    suspicious_patterns.append(f"Short content with high engagement: {len(short_high_engagement)} posts")
+                
+                # Pattern 2: Low retweet-to-like ratio (bot-like behavior)
+                analysis_df['rt_like_ratio'] = analysis_df['retweet_count'] / (analysis_df['like_count'] + 1)
+                low_rt_ratio = analysis_df[analysis_df['rt_like_ratio'] < 0.05]
+                
+                if len(low_rt_ratio) > 0:
+                    suspicious_patterns.append(f"Unusual retweet/like patterns: {len(low_rt_ratio)} posts")
+                
+                # Pattern 3: High engagement during off-hours
+                if 'created_at' in analysis_df.columns:
+                    analysis_df['hour'] = pd.to_datetime(analysis_df['created_at']).dt.hour
+                    off_hours_posts = analysis_df[
+                        (analysis_df['hour'].isin([0, 1, 2, 3, 4, 5])) &
+                        (analysis_df['total_engagement'] > analysis_df['total_engagement'].median())
+                    ]
                     
-                    with col2:
-                        # Bot probability distribution
-                        bot_probs = [bot['bot_probability'] for bot in bots if 'bot_probability' in bot]
-                        if bot_probs:
-                            fig = px.histogram(
-                                x=bot_probs,
-                                nbins=15,
-                                title='Bot Probability Distribution',
-                                labels={'x': 'Bot Probability', 'y': 'Account Count'},
-                                color_discrete_sequence=['skyblue']
-                            )
-                            fig.add_vline(
-                                x=0.6, 
-                                line_dash="dash", 
-                                line_color="red", 
-                                annotation_text="Bot Threshold (60%)"
-                            )
-                            st.plotly_chart(fig, use_container_width=True)
-                        else:
-                            st.info("No bot probability data available")
+                    if len(off_hours_posts) > 0:
+                        suspicious_patterns.append(f"High engagement during off-hours: {len(off_hours_posts)} posts")
+                
+                if suspicious_patterns:
+                    st.warning("**Suspicious Engagement Patterns Detected:**")
+                    for pattern in suspicious_patterns:
+                        st.write(f"- {pattern}")
                 else:
-                    st.warning("No bot analysis data available. Run coordination detection first.")
-            else:
-                st.warning("Run coordination detection to see bot analysis results.")
+                    st.success("No suspicious engagement patterns detected")
             
-            # User behavior analysis
-            st.subheader("👤 User Behavior Analysis") 
+            st.subheader("🕸️ Key Influencers and Network Analysis")
             
-            user_stats = df.groupby('username').agg({
+            # Identify key influencers based on multiple metrics
+            user_influence_metrics = analysis_df.groupby('username').agg({
+                'total_engagement': ['sum', 'mean'],
                 'text': 'count',
-                'like_count': 'mean',
-                'retweet_count': 'mean'
+                'risk_score': 'mean',
+                'is_anti_india': 'sum',
+                'is_toxic': 'sum'
             }).round(2)
             
-            user_stats.columns = ['Posts', 'Avg Likes', 'Avg Retweets']
-            user_stats = user_stats.sort_values('Posts', ascending=False)
+            # Flatten column names
+            user_influence_metrics.columns = [
+                'Total_Engagement', 'Avg_Engagement', 'Post_Count', 
+                'Avg_Risk_Score', 'Anti_India_Posts', 'Toxic_Posts'
+            ]
+            
+            # Calculate influence score
+            user_influence_metrics['Influence_Score'] = (
+                (user_influence_metrics['Total_Engagement'] * 0.4) +
+                (user_influence_metrics['Avg_Engagement'] * 0.3) +
+                (user_influence_metrics['Post_Count'] * 0.2) +
+                (user_influence_metrics['Avg_Risk_Score'] * 0.1)
+            )
+            
+            # Normalize influence score to 0-100
+            max_influence = user_influence_metrics['Influence_Score'].max()
+            if max_influence > 0:
+                user_influence_metrics['Influence_Score'] = (
+                    user_influence_metrics['Influence_Score'] / max_influence * 100
+                ).round(1)
             
             col1, col2 = st.columns(2)
             
             with col1:
-                st.write("**Top 10 Most Active Users:**")
-                st.dataframe(user_stats.head(10), use_container_width=True)
-            
-            with col2:
-                # Posts per user distribution
-                fig = px.histogram(
-                    x=user_stats['Posts'],
-                    nbins=20,
-                    title='Posts per User Distribution',
-                    labels={'x': 'Number of Posts', 'y': 'Number of Users'}
-                )
-                st.plotly_chart(fig, use_container_width=True)
-            
-            # Performance analytics
-            st.subheader("⚡ System Performance Metrics")
-            
-            col1, col2, col3 = st.columns(3)
-            
-            with col1:
-                # Calculate actual processing metrics
-                total_records = len(df)
-                estimated_time = max(1, total_records / 100)  # Rough estimate
-                processing_speed = total_records / estimated_time
-                st.metric("Processing Speed", f"{processing_speed:.0f} records/min")
-            
-            with col2:
-                memory_mb = df.memory_usage(deep=True).sum() / (1024 * 1024)
-                memory_efficiency = total_records / memory_mb if memory_mb > 0 else 0
-                st.metric("Memory Efficiency", f"{memory_efficiency:.0f} records/MB")
-            
-            with col3:
-                # Calculate detection accuracy based on analysis results
-                if 'analysis_results' in st.session_state:
-                    high_risk_detected = len(st.session_state.analysis_results[
-                        st.session_state.analysis_results['risk_score'] > 6
-                    ])
-                    detection_rate = high_risk_detected / total_records
-                    accuracy_score = min(0.98, 0.85 + detection_rate * 0.13)
+                st.write("**Top Influencers (All Categories)**")
+                
+                top_influencers = user_influence_metrics.sort_values('Influence_Score', ascending=False).head(15)
+                
+                # Color-code based on risk level
+                def get_risk_color(avg_risk):
+                    if avg_risk >= 7:
+                        return "🔴"
+                    elif avg_risk >= 5:
+                        return "🟠"
+                    elif avg_risk >= 3:
+                        return "🟡"
+                    else:
+                        return "🟢"
+                
+                influencer_display = []
+                for username, metrics in top_influencers.iterrows():
+                    risk_emoji = get_risk_color(metrics['Avg_Risk_Score'])
+                    influencer_display.append({
+                        'Risk': risk_emoji,
+                        'Username': username,
+                        'Influence Score': f"{metrics['Influence_Score']:.1f}",
+                        'Total Engagement': f"{metrics['Total_Engagement']:,.0f}",
+                        'Posts': int(metrics['Post_Count']),
+                        'Avg Risk': f"{metrics['Avg_Risk_Score']:.1f}",
+                        'Anti-India': int(metrics['Anti_India_Posts']),
+                        'Toxic': int(metrics['Toxic_Posts'])
+                    })
+                
+                if influencer_display:
+                    st.dataframe(pd.DataFrame(influencer_display), use_container_width=True)
                 else:
-                    accuracy_score = 0.90
-                st.metric("Detection Accuracy", f"{accuracy_score:.1%}")
+                    st.info("No influencer data available")
+            
+            with col2:
+                # st.write("**High-Risk Influencers Network**")
+                
+                # Focus on high-risk influencers
+                high_risk_influencers = user_influence_metrics[
+                    (user_influence_metrics['Avg_Risk_Score'] > 5) |
+                    (user_influence_metrics['Anti_India_Posts'] > 0) |
+                    (user_influence_metrics['Toxic_Posts'] > 0)
+                ].sort_values('Influence_Score', ascending=False)
+                
+                if not high_risk_influencers.empty:
+                    # Create network visualization data
+                    network_data = []
+                    for username, metrics in high_risk_influencers.head(10).iterrows():
+                        network_data.append({
+                            'username': username,
+                            'influence_score': metrics['Influence_Score'],
+                            'risk_score': metrics['Avg_Risk_Score'],
+                            'anti_india_posts': metrics['Anti_India_Posts'],
+                            'toxic_posts': metrics['Toxic_Posts'],
+                            'total_engagement': metrics['Total_Engagement']
+                        })
+                    
+                    # Display as bubble chart
+                    if network_data:
+                        network_df = pd.DataFrame(network_data)
+                        
+                        fig = px.scatter(
+                            network_df,
+                            x='influence_score',
+                            y='risk_score', 
+                            size='total_engagement',
+                            color='anti_india_posts',
+                            hover_name='username',
+                            title='High-Risk Influencer Network',
+                            labels={
+                                'influence_score': 'Influence Score',
+                                'risk_score': 'Risk Score',
+                                'anti_india_posts': 'Anti-India Posts'
+                            },
+                            size_max=30
+                        )
+                        
+                        st.plotly_chart(fig, use_container_width=True)
+                    
+                    # Network connections analysis
+                    st.write("**Network Connection Patterns:**")
+                    
+                    # Analyze common posting times (potential coordination)
+                    if 'created_at' in analysis_df.columns:
+                        high_risk_posts = analysis_df[
+                            analysis_df['username'].isin(high_risk_influencers.index) &
+                            (analysis_df['risk_score'] > 5)
+                        ]
+                        
+                        if not high_risk_posts.empty:
+                            high_risk_posts['created_at'] = pd.to_datetime(high_risk_posts['created_at'])
+                            high_risk_posts['hour'] = high_risk_posts['created_at'].dt.hour
+                            
+                            # Find peak activity hours for high-risk users
+                            peak_hours = high_risk_posts['hour'].value_counts().head(3)
+                            
+                            connection_insights = []
+                            connection_insights.append(f"High-risk users most active during: {', '.join([f'{h}:00' for h in peak_hours.index])}")
+                            
+                            # Check for coordinated posting (same hour, multiple users)
+                            hourly_users = high_risk_posts.groupby('hour')['username'].nunique()
+                            coordinated_hours = hourly_users[hourly_users > 3].index
+                            
+                            if len(coordinated_hours) > 0:
+                                connection_insights.append(f"Potential coordination detected during: {', '.join([f'{h}:00' for h in coordinated_hours])}")
+                            
+                            # Analyze common hashtags/terms
+                            high_risk_texts = ' '.join(high_risk_posts['text'].tolist())
+                            common_hashtags = re.findall(r'#\w+', high_risk_texts.lower())
+                            if common_hashtags:
+                                hashtag_counts = pd.Series(common_hashtags).value_counts().head(5)
+                                connection_insights.append(f"Common hashtags: {', '.join(hashtag_counts.index)}")
+                            
+                            for insight in connection_insights:
+                                st.write(f"- {insight}")
+                        else:
+                            st.info("No high-risk posting patterns detected")
+                else:
+                    st.info("No high-risk influencers identified")
+            
+            # Network mapping section
+            st.write("**Follower Network Analysis**")
+            
+            # Simulate follower networks based on engagement patterns
+            if 'coordination_results' in st.session_state:
+                coord_results = st.session_state.coordination_results
+                duplicates = coord_results.get('duplicates', [])
+                
+                if duplicates:
+                    # Extract user connections from coordination data
+                    user_connections = {}
+                    
+                    for dup in duplicates:
+                        accounts = dup.get('accounts', [])
+                        if len(accounts) >= 2:
+                            for i, acc1 in enumerate(accounts):
+                                if acc1 not in user_connections:
+                                    user_connections[acc1] = set()
+                                for acc2 in accounts[i+1:]:
+                                    user_connections[acc1].add(acc2)
+                                    if acc2 not in user_connections:
+                                        user_connections[acc2] = set()
+                                    user_connections[acc2].add(acc1)
+                    
+                    if user_connections:
+                        st.write("**Network Connections Detected:**")
+                        
+                        network_stats = []
+                        for user, connections in user_connections.items():
+                            if user in user_influence_metrics.index:
+                                influence_score = user_influence_metrics.loc[user, 'Influence_Score']
+                                risk_score = user_influence_metrics.loc[user, 'Avg_Risk_Score']
+                                
+                                network_stats.append({
+                                    'Username': user,
+                                    'Connections': len(connections),
+                                    'Influence Score': f"{influence_score:.1f}",
+                                    'Risk Score': f"{risk_score:.1f}",
+                                    'Connected To': ', '.join(list(connections)[:3]) + ('...' if len(connections) > 3 else '')
+                                })
+                        
+                        if network_stats:
+                            network_df = pd.DataFrame(network_stats)
+                            network_df = network_df.sort_values('Connections', ascending=False)
+                            st.dataframe(network_df, use_container_width=True)
+                            
+                            # Network density analysis
+                            total_users = len(user_connections)
+                            total_connections = sum(len(conns) for conns in user_connections.values()) // 2
+                            max_possible_connections = total_users * (total_users - 1) // 2
+                            network_density = total_connections / max_possible_connections if max_possible_connections > 0 else 0
+                            
+                            st.metric("Network Density", f"{network_density:.2%}")
+                            
+                            if network_density > 0.3:
+                                st.warning("High network density suggests coordinated behavior")
+                            elif network_density > 0.1:
+                                st.info("Moderate network connectivity detected")
+                            else:
+                                st.success("Low network density - appears organic")
+                    else:
+                        st.info("No significant network connections detected")
+                else:
+                    st.info("Run coordination detection to analyze network connections")
+            else:
+                st.info("Network analysis requires coordination detection data")        
     
     # Enhanced alert system
     st.sidebar.markdown("---")
