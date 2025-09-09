@@ -1824,7 +1824,7 @@ def main():
                     df, 
                     st.session_state.analysis_results,
                     st.session_state.get('coordination_results', {})
-                )
+                )        
                 
                 # Create download button
                 st.download_button(
@@ -1899,7 +1899,7 @@ def main():
                         'MINIMAL': '#90EE90'
                     }
                 )
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, width='stretch')
         
         with tab2:
             # Enhanced high-risk content
@@ -2002,7 +2002,7 @@ def main():
                     st.subheader("🕸️ Fixed Coordination Network")
                     fig = create_fixed_network_visualization(temporal)
                     if fig.data:  # Only show if there's actual data
-                        st.plotly_chart(fig, use_container_width=True)
+                        st.plotly_chart(fig, width='stretch')
                     else:
                         st.info("Network visualization requires more coordination data")
         
@@ -2035,7 +2035,7 @@ def main():
                             }).round(2)
                             
                             threat_engagement.columns = ['Post Count', 'Avg Engagement', 'Total Engagement', 'Avg Risk Score']
-                            st.dataframe(threat_engagement, use_container_width=True)
+                            st.dataframe(threat_engagement, width='stretch')
                         
                         # Show top engaging posts by risk level
                         st.write("**Top Engaging High-Risk Posts:**")
@@ -2070,7 +2070,7 @@ def main():
                         labels={'risk_score': 'Risk Score', 'total_engagement': 'Total Engagement'},
                         hover_data=['username']
                     )
-                    st.plotly_chart(fig, use_container_width=True)
+                    st.plotly_chart(fig, width='stretch')
                 
                 # Engagement anomaly detection
                 st.write("**Engagement Anomaly Analysis**")
@@ -2181,7 +2181,7 @@ def main():
                     })
                 
                 if influencer_display:
-                    st.dataframe(pd.DataFrame(influencer_display), use_container_width=True)
+                    st.dataframe(pd.DataFrame(influencer_display), width='stretch')
                 else:
                     st.info("No influencer data available")
             
@@ -2228,7 +2228,7 @@ def main():
                             size_max=30
                         )
                         
-                        st.plotly_chart(fig, use_container_width=True)
+                        st.plotly_chart(fig, width='stretch')
                     
                     # Network connections analysis
                     st.write("**Network Connection Patterns:**")
@@ -2315,7 +2315,7 @@ def main():
                         if network_stats:
                             network_df = pd.DataFrame(network_stats)
                             network_df = network_df.sort_values('Connections', ascending=False)
-                            st.dataframe(network_df, use_container_width=True)
+                            st.dataframe(network_df, width='stretch')
                             
                             # Network density analysis
                             total_users = len(user_connections)
