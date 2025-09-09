@@ -1,73 +1,200 @@
-# Anti-India Detection System
+# Anti-India Campaign Detection System
 
 ## Overview
 
-The Anti-India Detection System is a project aimed at identifying and flagging content that contains anti-India sentiment across digital platforms. It utilizes Natural Language Processing (NLP) and machine learning techniques to analyze and detect potentially harmful or sensitive content efficiently.
+This project is an advanced **Anti-India Campaign Detection System** built with [Streamlit](https://streamlit.io/) for interactive dashboarding, machine learning-based content analysis, network graphing, and automated reporting. It is designed to identify and analyze suspicious, coordinated, or high-risk social media activity targeting India, leveraging both Twitter and Reddit data sources.
 
-## Key Features
+### Core Features
 
-- **Automated Content Scanning**: Analyzes text data for anti-India sentiment using advanced algorithms.
-- **Customizable Detection**: Fine-tune detection parameters for different platforms and sources.
-- **Reporting & Dashboard**: Provides actionable reports and an interactive dashboard for monitoring flagged content.
-- **Extensible Design**: Easily integrates additional data sources and detection logic.
-- **Machine Learning Models**: Uses both supervised and unsupervised techniques for high accuracy.
+- **Multi-source Data Collection:** Supports Twitter API, Reddit API, file uploads (CSV, JSON, Excel), and synthetic demo data.
+- **ML/NLP Analysis:** Uses transformer models for sentiment and toxicity detection, as well as rule-based systems for fallback.
+- **Coordination Detection:** Identifies duplicate, temporally coordinated, and bot-driven content using clustering, similarity, and statistical methods.
+- **Interactive Visualizations:** Presents advanced trend, engagement, and network graphs using Plotly with a fixed dark theme.
+- **PDF & Email Reporting:** Generates comprehensive PDF reports and sends them via email using built-in SMTP.
+- **Enhanced Dashboard:** Multi-tab dashboard for threat analytics, high-risk posts, coordination networks, bot analysis, and performance metrics.
 
-## Prototype
+---
 
-A live prototype of the Anti-India Detection System is available for testing and demonstration.  
-**Prototype Link**: [Streamlit App](https://anti-india-detection-system.streamlit.app/)
+## Architecture
 
-The prototype allows users to input textual data and visualize detection outputs. It demonstrates the core detection capabilities and reporting features in a user-friendly interface.
+### High-Level Flow
 
-## Getting Started
+```mermaid
+flowchart TD
+    subgraph Data Sources
+        TwitterAPI["Twitter API"]
+        RedditAPI["Reddit API"]
+        Upload["File Upload"]
+        DemoGen["Demo Data Generator"]
+    end
 
-### Installation
+    subgraph Data Collection
+        Collector["DataCollector Class"]
+        TwitterAPI -->|API| Collector
+        RedditAPI -->|API| Collector
+        Upload -->|Upload| Collector
+        DemoGen -->|Synthetic| Collector
+    end
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/Om-ingle/anti-india-detection-system.git
-   cd anti-india-detection-system
-   ```
+    subgraph Preprocessing
+        Clean["Standardize & Clean Data"]
+        Collector --> Clean
+    end
 
-2. **Install dependencies:**
-   ```bash
-   pip install -r requirements.txt
-   ```
+    subgraph ML_Analysis
+        Analyzer["OptimizedContentAnalyzer"]
+        Clean --> Analyzer
+        Analyzer --> Sentiment["Sentiment Analysis"]
+        Analyzer --> Toxicity["Toxicity Analysis"]
+        Analyzer --> AntiIndia["Anti-India Detection"]
+        Analyzer --> RiskScore["Risk Scoring & Threat Categorization"]
+    end
 
-3. **Configure settings:**
-   - Update configuration files as needed for your sources and detection preferences.
+    subgraph CoordinationDetection
+        Detector["OptimizedCoordinationDetector"]
+        Clean --> Detector
+        Detector --> Duplicates["Duplicate Detection"]
+        Detector --> Temporal["Temporal Coordination"]
+        Detector --> Bots["Bot Detection"]
+    end
 
-### Usage
+    subgraph Dashboard
+        Streamlit["Streamlit App"]
+        Sentiment --> Streamlit
+        Toxicity --> Streamlit
+        AntiIndia --> Streamlit
+        RiskScore --> Streamlit
+        Duplicates --> Streamlit
+        Temporal --> Streamlit
+        Bots --> Streamlit
+    end
 
-1. **Run the detection system:**
-   ```bash
-   streamlit run app.py
-   ```
+    subgraph Visualization
+        TrendCharts["Trend Analysis Charts"]
+        VelocityCharts["Engagement Velocity Charts"]
+        NetworkViz["Network Visualization"]
+        TimelineViz["Timeline Visualization"]
+        Streamlit --> TrendCharts
+        Streamlit --> VelocityCharts
+        Streamlit --> NetworkViz
+        Streamlit --> TimelineViz
+    end
 
-2. **Interact with the prototype:**
-   - Visit the [Streamlit App](https://anti-india-detection-system.streamlit.app/) to test detection interactively.
+    subgraph Reporting
+        PDFReport["PDF Report Generator"]
+        EmailReport["Email Sending System"]
+        Streamlit --> PDFReport
+        PDFReport --> EmailReport
+    end
+```
 
-## Documentation
+---
 
-For more detailed information about the system's design, features, and usage, please refer to the official documentation:  
-[Google Doc](https://docs.google.com/document/d/1xSP-xI4y7kyBep_N9p_OTlcZzKsCYHVkkjPPEJbeq_k/edit?tab=t.0)
+### Module Breakdown
 
-## Contributing
+- **app.py** (This file):  
+  - Houses all classes, logic, and UI for the system.
+  - Main modules:
+    - `DataCollector`: Data ingestion from APIs, uploads, and demo generation.
+    - `OptimizedContentAnalyzer`: ML/NLP model loading, batch analysis, rule-based fallback.
+    - `OptimizedCoordinationDetector`: Duplicate, temporal, and bot pattern detection.
+    - Visualization Functions: Trend, engagement, network, timeline, and summary charts.
+    - Reporting Functions: PDF report generation, email sending, and summary text.
 
-Contributions are welcome! Please open issues or submit pull requests to propose improvements or new features.
+- **ML Models:**
+  - Uses [HuggingFace Transformers](https://huggingface.co/transformers/) (`cardiffnlp/twitter-roberta-base-sentiment-latest` for sentiment, `martin-ha/toxic-comment-model` for toxicity).
+  - GPU acceleration if CUDA is available.
 
-1. Fork the repository.
-2. Create your feature branch (`git checkout -b feature-name`).
-3. Commit your changes (`git commit -am 'Add new feature'`).
-4. Push to the branch (`git push origin feature-name`).
-5. Open a Pull Request.
+- **Visualization:**
+  - [Plotly](https://plotly.com/python/) for all charting, with a custom dark theme.
+  - NetworkX for graph structure and metrics.
+
+- **Reporting & Alerts:**
+  - [fpdf2](https://pypi.org/project/fpdf2/) for PDF generation.
+  - SMTP for sending email reports (Google App Password required).
+  - Sidebar alert system for critical findings.
+
+---
+
+## Usage Instructions
+
+1. **Install Dependencies:**
+    ```bash
+    pip install streamlit torch transformers plotly networkx pandas numpy scikit-learn fpdf2 tweepy praw
+    ```
+
+2. **Run the App:**
+    ```bash
+    streamlit run app.py
+    ```
+
+3. **Select Data Source:**
+    - **Upload Dataset:** CSV, JSON, Excel (up to 100MB supported).
+    - **Twitter API:** Requires Bearer Token.
+    - **Reddit API:** Requires Client ID, Secret, and User Agent.
+    - **Demo Data:** For quick testing, generates synthetic data.
+
+4. **Analyze:**
+    - Use dashboard buttons to run ML analysis and coordination detection.
+    - Navigate tabs for detailed results.
+
+5. **Reporting:**
+    - Generate full markdown or PDF reports.
+    - Configure email in sidebar (Gmail App Password required) and send report.
+
+---
+
+## Customization
+
+- **Theme and Performance:**  
+  Tune dark theme settings and batch/visualization size via sidebar.
+- **Keywords & Patterns:**  
+  Edit anti-India and suspicious phrase lists in `OptimizedContentAnalyzer`.
+- **Model Selection:**  
+  Swap out HuggingFace models as needed.
+
+---
+
+## Security & Privacy
+
+- **API Credentials:**  
+  Credentials entered in the sidebar are not stored or logged.
+- **Data:**  
+  Uploaded or collected data is only processed in-memory; not saved locally.
+
+---
+
+## Extending the System
+
+- Add new ML models or threat patterns by extending `OptimizedContentAnalyzer`.
+- Integrate additional social media APIs (e.g., Facebook, YouTube) by subclassing `DataCollector`.
+- Enhance reporting outputs (HTML, Excel) using the reporting utilities.
+
+---
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
-
-## Contact
-
-Questions or suggestions? Reach out to [Om-ingle](https://github.com/Om-ingle).
+MIT License
 
 ---
+
+## Contact / Support
+
+For issues or questions, open a GitHub issue in this repository or email the maintainer.
+
+---
+
+## Sample Dashboard Screenshot
+
+![Dashboard Screenshot](docs/dashboard_example.png)
+
+---
+
+## Acknowledgments
+
+- HuggingFace Transformers
+- Streamlit
+- Plotly
+- NetworkX
+- scikit-learn
+- fpdf2
