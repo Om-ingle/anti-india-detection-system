@@ -184,11 +184,7 @@ For issues or questions, open a GitHub issue in this repository or email the mai
 
 ---
 
-## Sample Dashboard Screenshot
 
-![Dashboard Screenshot](docs/dashboard_example.png)
-
----
 
 ## Acknowledgments
 
